@@ -1,0 +1,85 @@
+# Python Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Dataset Files (can be large)
+data/raw/*.csv
+data/processed/*.csv
+data/images/*.png
+data/images/*.jpg
+data/images/*.jpeg
+data/documents/*.pdf
+data/documents/*.docx
+
+# But keep the folders
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/images/.gitkeep
+!data/documents/.gitkeep
+
+# Model files (large trained models)
+models/*.pth
+models/*.pt
+models/*.bin
+models/*.h5
+models/*.pkl
+*.ckpt
+
+# Results and outputs
+results/*.png
+results/*.csv
+results/*.json
+presentation/*.pptx
+
+# Keep README files in results
+!results/README.md
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS Files
+Thumbs.db
+.DS_Store
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Papers (if copyrighted)
+papers/*.pdf
+
+# Keep structure files
+!data/DATASET_PLAN.md
+!README.md
+!PROJECT_LOG.md
+!requirements.txt
