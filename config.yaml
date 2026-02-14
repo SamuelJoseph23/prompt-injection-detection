@@ -1,0 +1,37 @@
+# Ghost in the Machine - Configuration
+# =====================================
+
+model:
+  model_name: "bert-base-uncased"
+  max_seq_length: 128
+  embedding_dim: 256
+  dropout: 0.1
+  freeze_encoder_layers: 0
+
+training:
+  batch_size: 8
+  learning_rate: 2e-5
+  weight_decay: 0.01
+  epochs: 5
+  warmup_ratio: 0.1
+  margin: 1.0
+  patience: 3
+
+data:
+  train_file: "data/processed/train.csv"
+  val_file: "data/processed/val.csv"
+  test_file: "data/processed/test.csv"
+  zeroday_file: "data/processed/test_zeroday.csv"
+
+output:
+  model_dir: "models"
+  results_dir: "results"
+  log_dir: "results/tensorboard"
+
+reproducibility:
+  seed: 42
+
+quick_mode:
+  quick: false
+  quick_samples: 200
+  quick_epochs: 1

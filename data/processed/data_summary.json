@@ -1,0 +1,83 @@
+{
+  "total_samples": 1137,
+  "label_distribution": {
+    "1": 762,
+    "0": 375
+  },
+  "attack_types": {
+    "encoded": 400,
+    "none": 310,
+    "document_injection": 42,
+    "context_poisoning": 42,
+    "direct": 40,
+    "benign": 40,
+    "ascii_art": 39,
+    "citation_poisoning": 37,
+    "multi_document": 32,
+    "mixed_content": 32,
+    "image_text": 29,
+    "homoglyph": 27,
+    "metadata_poisoning": 27,
+    "combined": 22,
+    "whitespace": 18
+  },
+  "attack_categories": {
+    "none": 350,
+    "unicode": 67,
+    "direct": 40,
+    "reversed": 40,
+    "mixed_case": 40,
+    "zero_width": 40,
+    "hex": 40,
+    "url": 40,
+    "rot13": 40,
+    "base64": 40,
+    "leetspeak": 40,
+    "caesar": 40,
+    "embedded_instruction": 40,
+    "hidden_context": 40,
+    "ascii": 39,
+    "fake_authority": 35,
+    "distributed_injection": 30,
+    "diluted_injection": 30,
+    "image": 29,
+    "hidden_metadata": 25,
+    "text_image": 22,
+    "formatting": 18,
+    "legitimate_citation": 2,
+    "normal_metadata": 2,
+    "normal_references": 2,
+    "normal_context": 2,
+    "normal_document": 2,
+    "normal_content": 2
+  },
+  "sources": {
+    "encoded_attacks": 400,
+    "straightforward": 350,
+    "rag_poisoned": 212,
+    "multimodal": 135,
+    "encoded_benign": 40
+  },
+  "splits": {
+    "train": {
+      "total": 767,
+      "malicious": 505,
+      "benign": 262
+    },
+    "val": {
+      "total": 165,
+      "malicious": 109,
+      "benign": 56
+    },
+    "test": {
+      "total": 165,
+      "malicious": 108,
+      "benign": 57
+    },
+    "test_zeroday": {
+      "total": 40,
+      "malicious": 40,
+      "benign": 0
+    }
+  }
+}
