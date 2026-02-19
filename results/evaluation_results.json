@@ -1,0 +1,40 @@
+{
+  "baseline_test": {
+    "accuracy": 0.9575757575757575,
+    "precision": 0.9391304347826087,
+    "recall": 1.0,
+    "f1": 0.968609865470852,
+    "auc": 0.9993502274204029
+  },
+  "baseline_zeroday": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auc": NaN
+  },
+  "keyword_baseline": {
+    "accuracy": 0.7515151515151515,
+    "precision": 1.0,
+    "recall": 0.6203703703703703,
+    "f1": 0.7657142857142857
+  },
+  "regex_baseline": {
+    "accuracy": 0.7272727272727273,
+    "precision": 1.0,
+    "recall": 0.5833333333333334,
+    "f1": 0.7368421052631579
+  },
+  "keyword_zeroday": {
+    "accuracy": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0
+  },
+  "regex_zeroday": {
+    "accuracy": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0
+  }
+}

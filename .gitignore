@@ -1,7 +1,6 @@
 # Python Virtual Environment
 venv/
 env/
-ENV/
 .venv/
 
 # Python Cache
@@ -14,23 +13,18 @@ __pycache__/
 # Jupyter Notebook
 .ipynb_checkpoints/
 *.ipynb_checkpoints
+results_analysis_executed.ipynb
 
-# Dataset Files (can be large)
+# Dataset Files
 data/raw/*.csv
 data/processed/*.csv
-data/images/*.png
-data/images/*.jpg
-data/images/*.jpeg
-data/documents/*.pdf
-data/documents/*.docx
-
-# But keep the folders
+data/images/
+data/documents/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-!data/images/.gitkeep
-!data/documents/.gitkeep
+!data/DATASET_PLAN.md
 
-# Model files (large trained models)
+# Model files (trained weights)
 models/*.pth
 models/*.pt
 models/*.bin
@@ -39,12 +33,14 @@ models/*.pkl
 *.ckpt
 
 # Results and outputs
-results/*.png
-results/*.csv
-results/*.json
-presentation/*.pptx
+results/tensorboard/
+results/training_history.json
+results/*.log
+*.log
 
-# Keep README files in results
+# Keep research assets
+!results/figures/
+!results/evaluation_results.json
 !results/README.md
 
 # IDE and Editor
@@ -54,11 +50,7 @@ presentation/*.pptx
 *.swo
 *~
 .DS_Store
-
-# OS Files
 Thumbs.db
-.DS_Store
-*.log
 
 # Environment variables
 .env
@@ -75,11 +67,10 @@ dist/
 .coverage
 htmlcov/
 
-# Papers (if copyrighted)
+# Miscellaneous
 papers/*.pdf
-
-# Keep structure files
-!data/DATASET_PLAN.md
 !README.md
 !PROJECT_LOG.md
 !requirements.txt
+!config.yaml
+!run_pipeline.py
