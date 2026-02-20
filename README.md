@@ -67,6 +67,17 @@ The dataset comprises 3,580 raw samples across four categories of prompt injecti
 | Dataset 3 | Multi-modal attacks | 520 | ASCII art, image-based, text+image, homoglyph/Unicode, whitespace |
 | Dataset 4 | RAG-poisoned documents | 2,000 | Context poisoning, document injection, citation poisoning, multi-document, metadata poisoning, mixed content |
 
+### Dataset Creation
+
+The datasets were generated using a combination of manual curation and algorithmic augmentation:
+
+1.  **Dataset 1 (Straightforward)**: Manually curated set of 662 prompts. Malicious samples include common "jailbreak" templates, system prompt reveal requests, and direct instruction overrides. Benign samples include standard helpful assistant queries.
+2.  **Dataset 2 (Encoded)**: Generated using `scripts/generate_dataset2.py`. This script takes base attack templates and programmatically applies 10 different encoding schemes: Base64, Hexadecimal, ROT13, Leetspeak, URL encoding, Unicode escapes, Reversed text, Mixed case, Zero-width character insertion, and Caesar ciphers.
+3.  **Dataset 3 (Multi-modal)**: Generated using `scripts/generate_dataset3.py`. Focuses on character-level obfuscation that exploits how LLMs tokenize text. Techniques include Unicode homoglyph substitution (e.g., using Cyrillic 'а' instead of Latin 'a'), ASCII art instruction patterns, and invisible text steganography.
+4.  **Dataset 4 (RAG-poisoned)**: Generated using `scripts/generate_dataset4.py`. Simulates a RAG environment where malicious instructions are embedded within larger, seemingly benign documents. The script generates 2,000 samples across 6 methods, including citation-based poisoning and metadata-level injections.
+
+---
+
 ### Preprocessing
 
 The preprocessing pipeline (`scripts/preprocess_data.py`) performs the following:

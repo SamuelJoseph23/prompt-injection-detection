@@ -6,6 +6,7 @@ Produces a professionally formatted Word document with:
   - 1-inch margins, 1.5 line spacing
   - Formatted tables with borders
   - Code blocks in Courier New 10pt
+  - Embedded figures at 14cm width, centered with italic captions
   - Page numbers in footer
 """
 
@@ -33,8 +34,10 @@ except ImportError:
 
 
 PAPER_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = PAPER_DIR.parent
 MD_PATH = PAPER_DIR / "ghost_in_the_machine.md"
-DOCX_PATH = PAPER_DIR / "ghost_in_the_machine.docx"
+DOCX_PATH_PRIMARY = PAPER_DIR / "ghost_in_the_machine.docx"
+DOCX_PATH_FALLBACK = PAPER_DIR / "ghost_in_the_machine_v2.docx"
 
 
 def set_margins(doc, top=1, bottom=1, left=1, right=1):
@@ -116,6 +119,57 @@ def parse_markdown(md_text: str) -> list[dict]:
             i += 1
             continue
 
+        # HTML image block: <p align="center"><img src="..." .../>
+        img_match = re.match(r'<p\s+align="center">\s*$', line.strip())
+        if img_match:
+            # Look for <img ...> on next line
+            if i + 1 < len(lines):
+                img_line = lines[i + 1].rstrip("\r").strip()
+                img_src_match = re.search(r'src="([^"]+)"', img_line)
+                if img_src_match:
+                    src = img_src_match.group(1)
+                    # Resolve path relative to paper/ directory
+                    img_path = (PAPER_DIR / src).resolve()
+                    # Skip </p> on line i+2
+                    # Look for caption on lines i+3, i+4
+                    caption = ""
+                    j = i + 2
+                    while j < len(lines) and j <= i + 5:
+                        cap_line = lines[j].rstrip("\r").strip()
+                        cap_match = re.search(r'<i>(.*?)</i>', cap_line)
+                        if cap_match:
+                            caption = cap_match.group(1)
+                            j += 1
+                            # Skip closing </p> if present
+                            if j < len(lines) and lines[j].rstrip("\r").strip() == "</p>":
+                                j += 1
+                            break
+                        elif cap_line in ("</p>", ""):
+                            j += 1
+                            continue
+                        else:
+                            break
+                    blocks.append({
+                        "type": "image",
+                        "path": str(img_path),
+                        "caption": caption,
+                    })
+                    i = j
+                    continue
+            # If we couldn't parse the image, skip this line
+            i += 1
+            continue
+
+        # HTML caption line (standalone, skip if encountered)
+        if line.strip().startswith("<p") and "<i>" in line.strip():
+            i += 1
+            continue
+
+        # Skip standalone HTML tags like </p>
+        if re.match(r'^</?p[^>]*>\s*$', line.strip()):
+            i += 1
+            continue
+
         # Headings
         hm = re.match(r'^(#{1,4})\s+(.+)$', line)
         if hm:
@@ -168,6 +222,7 @@ def parse_markdown(md_text: str) -> list[dict]:
                 nl = lines[i].rstrip("\r")
                 if (not nl.strip() or nl.strip().startswith("#") or
                     nl.strip().startswith("```") or nl.strip().startswith("|") or
+                    nl.strip().startswith("<p") or nl.strip().startswith("<img") or
                     re.match(r'^---+$', nl.strip()) or
                     re.match(r'^(\s*)([\d]+\.|\-|\*)\s+', nl)):
                     break
@@ -225,6 +280,7 @@ def build_docx(blocks: list[dict], output_path: Path):
     style.font.size = Pt(12)
     style.paragraph_format.line_spacing = 1.5
 
+    img_count = 0
     for block in blocks:
         btype = block["type"]
 
@@ -246,6 +302,42 @@ def build_docx(blocks: list[dict], output_path: Path):
             else:
                 add_formatted_text(p, block["text"], font_size=12, base_bold=True)
                 style_paragraph(p, font_size=12, bold=True, space_before=6, space_after=4)
+
+        elif btype == "image":
+            img_path = Path(block["path"])
+            caption = block.get("caption", "")
+
+            if img_path.exists():
+                img_count += 1
+                # Blank line before figure
+                doc.add_paragraph().paragraph_format.space_after = Pt(2)
+
+                # Image paragraph - centered, 14cm width
+                p = doc.add_paragraph()
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                run = p.add_run()
+                run.add_picture(str(img_path), width=Cm(14))
+                p.paragraph_format.space_after = Pt(4)
+                p.paragraph_format.space_before = Pt(4)
+
+                # Caption - italic, Times New Roman 11pt, centered
+                if caption:
+                    cap_p = doc.add_paragraph()
+                    cap_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    cap_run = cap_p.add_run(caption)
+                    cap_run.font.name = "Times New Roman"
+                    cap_run.font.size = Pt(11)
+                    cap_run.font.italic = True
+                    cap_p.paragraph_format.space_after = Pt(6)
+                    cap_p.paragraph_format.space_before = Pt(2)
+
+                # Blank line after figure
+                doc.add_paragraph().paragraph_format.space_after = Pt(2)
+                print(f"    Embedded: {img_path.name}")
+            else:
+                print(f"    WARNING: Image not found: {img_path}")
+                p = doc.add_paragraph()
+                add_formatted_text(p, f"[IMAGE NOT FOUND: {img_path.name}]")
 
         elif btype == "paragraph":
             p = doc.add_paragraph()
@@ -305,6 +397,7 @@ def build_docx(blocks: list[dict], output_path: Path):
 
     doc.save(str(output_path))
     print(f"DOCX saved to: {output_path}")
+    print(f"  Total figures embedded: {img_count}")
 
 
 def main():
@@ -316,10 +409,17 @@ def main():
     print(f"  Parsed {len(blocks)} blocks")
 
     print("Building DOCX...")
-    build_docx(blocks, DOCX_PATH)
+    # Try primary path first, fallback if file is locked (e.g. open in Word)
+    try:
+        build_docx(blocks, DOCX_PATH_PRIMARY)
+        out_path = DOCX_PATH_PRIMARY
+    except PermissionError:
+        print(f"  WARNING: {DOCX_PATH_PRIMARY.name} is locked, saving as {DOCX_PATH_FALLBACK.name}")
+        build_docx(blocks, DOCX_PATH_FALLBACK)
+        out_path = DOCX_PATH_FALLBACK
 
     # Verify
-    file_size = DOCX_PATH.stat().st_size
+    file_size = out_path.stat().st_size
     print(f"  File size: {file_size / 1024:.1f} KB")
     print("Done!")
 

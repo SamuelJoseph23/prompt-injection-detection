@@ -10,14 +10,12 @@
 
 | Name | Registration No. |
 |------|-----------------|
-| _________________________ | _________________________ |
-| _________________________ | _________________________ |
-| _________________________ | _________________________ |
-| _________________________ | _________________________ |
+| Samuel Joseph | (samuel.joseph2k05@gmail.com) |
+| Christ(Deemed to be)University | Bengaluru, India |
 
 ## 3. Domain
 
-Artificial Intelligence / Cybersecurity / Natural Language Processing
+Artificial Intelligence / Data Science / Cybersecurity / Natural Language Processing
 
 ## 4. Problem Statement
 
@@ -79,9 +77,31 @@ The dataset is composed of four complementary sub-datasets, each targeting a dis
 | Dataset 4 | dataset4_rag_poisoned.csv | RAG-Poisoned | 2,000 | 200 | 1,800 | 6 |
 | **Total** | | **All Families** | **3,580** | **930** | **2,650** | **22** |
 
+<p align="center">
+<img src="../results/figures/class_distribution.png" width="600"/>
+</p>
+<p align="center"><i>Figure 1: Distribution of benign vs malicious samples across the combined dataset.</i></p>
+
 After exact-text deduplication, the combined dataset contains **1,137 unique samples** (762 malicious, 375 benign). The data is partitioned using stratified sampling (seed=42) into training (767 samples, 70%), validation (165 samples, 15%), and test (165 samples, 15%) splits. An additional **40 samples** from two attack categories (homoglyph and caesar cipher) that are never observed during training are held out as a dedicated **zero-day evaluation set**, enabling rigorous assessment of generalization to entirely novel attack types.
 
+<p align="center">
+<img src="../results/figures/text_length_distribution.png" width="600"/>
+</p>
+<p align="center"><i>Figure 4: Text length distribution for malicious vs benign samples.</i></p>
+
 **Attack categories in the dataset include**: none, unicode, rot13, reversed, hex, base64, zero_width, leetspeak, homoglyph, caesar, ascii_art, invisible_text, steganographic, encoded_benign, direct_injection, context_manipulation, document_poisoning, metadata_injection, instruction_override, and data_exfiltration.
+
+<p align="center">
+<img src="../results/figures/attack_category_distribution.png" width="600"/>
+</p>
+<p align="center"><i>Figure 2: Distribution of samples across 21+ attack categories.</i></p>
+
+The four dataset sources each target a distinct attack family, ensuring comprehensive coverage of the prompt injection threat landscape. Dataset 1 provides straightforward injection baselines, Dataset 2 covers ten encoding-based obfuscation schemes, Dataset 3 addresses multi-modal attack vectors, and Dataset 4 focuses on the emerging threat of RAG document poisoning.
+
+<p align="center">
+<img src="../results/figures/source_distribution.png" width="600"/>
+</p>
+<p align="center"><i>Figure 3: Sample distribution across the four dataset sources.</i></p>
 
 ## 9. Python Code Snippets
 
@@ -440,7 +460,17 @@ The training pipeline employs class-weighted cross-entropy loss to address the m
 
 *Preliminary results: 1 epoch, 200 samples. Full training deferred due to computational constraints.
 
+<p align="center">
+<img src="../results/figures/f1_comparison.png" width="600"/>
+</p>
+<p align="center"><i>Figure 5: F1-Score comparison across all detection methods.</i></p>
+
 The BERT classifier achieves near-perfect performance on the standard test set, with perfect recall (100%) ensuring that no malicious prompt goes undetected. The 93.9% precision indicates a low false positive rate, with only a small fraction of benign inputs being incorrectly flagged. The 0.999 AUC confirms excellent discrimination across all classification thresholds.
+
+<p align="center">
+<img src="../results/figures/metric_comparison_grouped.png" width="600"/>
+</p>
+<p align="center"><i>Figure 6: Grouped comparison of Accuracy, Precision, Recall, and F1 across all models.</i></p>
 
 ### 4.3 Zero-Day Attack Detection
 
@@ -461,6 +491,11 @@ The zero-day holdout contains 40 samples from two obfuscation categories: homogl
 
 The BERT model's ability to achieve perfect detection on these unseen categories demonstrates that its internal representations capture semantic intent rather than surface-level patterns. The model has learned, from its exposure to other encoding types during training (Base64, hex, leetspeak, ROT13), a general concept of "obfuscated malicious text" that transfers to encoding schemes it has never encountered.
 
+<p align="center">
+<img src="../results/figures/radar_comparison.png" width="600"/>
+</p>
+<p align="center"><i>Figure 7: Radar chart comparing multi-metric performance across all detection methods.</i></p>
+
 ### 4.4 Dataset Statistics
 
 **Table 3: Dataset Composition and Split Distribution**
@@ -475,6 +510,11 @@ The BERT model's ability to achieve perfect detection on these unseen categories
 
 The zero-day holdout consists exclusively of malicious samples (all 40 are attacks), as the purpose of this set is to evaluate whether the model can detect entirely new attack types, not to assess its ability to classify benign inputs from those categories.
 
+<p align="center">
+<img src="../results/figures/attack_type_heatmap.png" width="600"/>
+</p>
+<p align="center"><i>Figure 8: Heatmap of F1-score performance across individual attack types.</i></p>
+
 ### 4.5 Performance Against Targets
 
 **Table 4: Achievement Against Stated Objectives**
@@ -488,6 +528,11 @@ The zero-day holdout consists exclusively of malicious samples (all 40 are attac
 | Test AUC | >0.95 | 0.999 | +0.049 |
 
 All stated objectives are met or exceeded.
+
+<p align="center">
+<img src="../results/figures/key_findings_summary.png" width="600"/>
+</p>
+<p align="center"><i>Figure 9: Summary of key research findings highlighting the 100% vs 0% zero-day detection gap.</i></p>
 
 ### 4.6 Discussion of Key Findings
 

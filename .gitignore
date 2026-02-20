@@ -16,12 +16,11 @@ __pycache__/
 results_analysis_executed.ipynb
 
 # Dataset Files
-data/raw/*.csv
-data/processed/*.csv
+data/**/*.csv
+data/**/*.parquet
 data/images/
 data/documents/
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+!data/**/.gitkeep
 !data/DATASET_PLAN.md
 
 # Model files (trained weights)
@@ -32,16 +31,27 @@ models/*.h5
 models/*.pkl
 *.ckpt
 
-# Results and outputs
+# Results and Outputs
 results/tensorboard/
 results/training_history.json
 results/*.log
 *.log
 
-# Keep research assets
+# Keep research assets (figures, evaluations)
 !results/figures/
 !results/evaluation_results.json
+!results/*.png
 !results/README.md
+
+# Paper and Documentation Build
+*.docx
+*.pdf
+*.zip
+!paper/*.md
+!paper/**/*.tex
+!paper/**/*.bib
+!paper/**/*.png
+!paper/**/*.py
 
 # IDE and Editor
 .vscode/
@@ -68,7 +78,6 @@ dist/
 htmlcov/
 
 # Miscellaneous
-papers/*.pdf
 !README.md
 !PROJECT_LOG.md
 !requirements.txt
