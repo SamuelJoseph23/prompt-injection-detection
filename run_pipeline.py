@@ -6,6 +6,7 @@ Executes the entire research pipeline in sequence:
 2. Model Training (Siamese & Baseline)
 3. Evaluation & Benchmarking
 4. Notebook Execution & Figure Generation
+5. Final Reporting (Dashboard & DOCX generation)
 
 Usage::
 
@@ -16,7 +17,7 @@ Usage::
     python run_pipeline.py --quick
 
     # Run specific stages
-    python run_pipeline.py --stages preprocess train evaluate
+    python run_pipeline.py --stages preprocess train evaluate report
 """
 
 from __future__ import annotations
@@ -57,7 +58,7 @@ def run_command(command: list[str], description: str) -> bool:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ghost in the Machine - Unified Pipeline")
     parser.add_argument("--quick", action="store_true", help="Run in quick smoke-test mode")
-    parser.add_argument("--stages", nargs="+", help="Specific stages to run (preprocess, train, evaluate, visualize)")
+    parser.add_argument("--stages", nargs="+", help="Specific stages to run (preprocess, train, evaluate, visualize, report)")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
     args = parser.parse_args()
 
@@ -72,7 +73,7 @@ def main() -> None:
             python_exe = str(potential_venv)
             print(f"Using discovered venv at: {python_exe}")
 
-    all_stages = ["preprocess", "train", "evaluate", "visualize"]
+    all_stages = ["preprocess", "train", "evaluate", "visualize", "report"]
     stages_to_run = args.stages if args.stages else all_stages
     
     print("=" * 60)
@@ -115,6 +116,21 @@ def main() -> None:
             # Don't exit here as core pipeline might be done
         else:
             print(f"\n    Notebook outputs and figures updated in: results/figures/")
+
+    # 5. Final Reporting
+    if "report" in stages_to_run:
+        print("\n=== Generating Final Reports & Dashboards ===")
+        # Dashboard
+        cmd = [python_exe, "scripts/generate_final_dashboard.py"]
+        run_command(cmd, "Final Results Dashboard Generation")
+        
+        # Original Paper DOCX
+        cmd = [python_exe, "paper/convert_to_docx.py"]
+        run_command(cmd, "Original Paper DOCX Generation")
+        
+        # Simplified Report DOCX
+        cmd = [python_exe, "paper/convert_report_to_docx.py"]
+        run_command(cmd, "Simplified Report DOCX Generation")
 
     print("\n" + "=" * 60)
     print("  PIPELINE EXECUTION COMPLETE")

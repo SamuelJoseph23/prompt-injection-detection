@@ -6,8 +6,11 @@ A research project investigating semantic dissonance analysis for detecting obfu
 
 Prompt injection attacks pose a significant threat to LLM-integrated applications, particularly when adversaries employ obfuscation techniques such as encoding, homoglyph substitution, or document-level poisoning. Traditional defences relying on keyword matching and regular expressions fail catastrophically against these attack vectors. This project proposes a semantic anomaly detection approach using transformer-based embeddings to identify malicious intent regardless of surface-level obfuscation. Preliminary results demonstrate that the BERT-based classifier achieves 96.9% F1-score on known attack types and 100% F1-score on zero-day (unseen) attack categories, compared to 76.6% and 0.0% respectively for keyword-based baselines.
 
+![Final Results Dashboard](results/final_results_dashboard.png)
+
 ## Table of Contents
 
+- [Submission Assets](#submission-assets)
 - [Project Structure](#project-structure)
 - [Dataset Description](#dataset-description)
 - [Model Architecture](#model-architecture)
@@ -17,6 +20,14 @@ Prompt injection attacks pose a significant threat to LLM-integrated application
 - [Configuration](#configuration)
 - [Citation](#citation)
 - [License](#license)
+
+## Submission Assets
+
+For academic evaluation and publication, the following standalone assets have been generated:
+- **Simplified Academic Report**: `paper/simplified_report.docx` (Includes 300-word abstract, formatted IEEE references, and 9 key figures).
+- **ArXiv LaTeX Package**: `paper/ghost_in_the_machine_arxiv.zip` (Ready for upload).
+- **Combined Final Dataset**: `data/combined_attack_dataset.csv` (All 3,580 samples merged into a single standardized file).
+- **Executive Summary Dashboard**: `results/final_results_dashboard.png`
 
 ## Project Structure
 
@@ -262,7 +273,7 @@ February 2026
 
 ## Status
 
-In Progress -- Model Development Phase
+Completed -- Submission & Publication Phase
 
 ## License
 
